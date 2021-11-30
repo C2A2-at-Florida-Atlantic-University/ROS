@@ -1,5 +1,5 @@
-# ROS
-Installation Of Ubuntu:
+# ROS Tutorial
+### Installation Of Ubuntu:
 While there are many versions of ROS, we will be using ROS Melodic to make things easier to manage since it is the most stable
 
 In order to even download ROS, you need to install Ubuntu 18.04 here at https://releases.ubuntu.com/18.04/ubuntu-18.04.6-desktop-amd64.iso 
@@ -14,7 +14,7 @@ Follow the instructions on the installation and decide whether you want to dual-
 
 Once finished, launch Ubuntu 18.04 after unplugging the installation USB or SD/Micro-SD and we will proceed to the installation of ROS
 
-Installation Of ROS Melodic:
+### Installation of ROS Melodic:
 
 On your terminal, first install python3 and pip3 with these commands to avoid errors with certain ROS libraries
 
