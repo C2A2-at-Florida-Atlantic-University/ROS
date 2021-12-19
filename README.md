@@ -159,8 +159,7 @@ roslaunch turtlebot3_gazebo turtlebot3_house.launch
 ```
 How to Teleoperate the Turtlebot on Gazebo:
 
-####In order to teleoperate the TurtleBot3 with the keyboard, launch the teleoperation node with below command in a new terminal window.
-
+In order to teleoperate the TurtleBot3 with the keyboard, launch the teleoperation node with below command in a new terminal window or tab:
 ```
 roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 ```
