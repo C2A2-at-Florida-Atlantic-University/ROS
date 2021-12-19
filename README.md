@@ -79,5 +79,51 @@ With the following, you can initialize and update rosdep.
 sudo rosdep init
 rosdep update
 ```
+### Catkin/CMake Installation and ROS Workspace Creation:
 
+To install catkin paste this into the terminal:
+```
+sudo apt-get install ros-melodic-catkin
+```
+Now to access the installation:
+```
+source /opt/ros/melodic/setup.bash
+```
+Then to build your ROS Workspace in your home directory:
+```
+mkdir -p ~/navigation_ws/src
+cd ~/navigation_ws/
+catkin_make
+```
+To add Python 3 Compatibility:
+```
+catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3
+```
+Now to add your Workspace as your default workspace:
+```
+source devel/setup.bash
+echo $ROS_PACKAGE_PATH
+/home/user/navigation_ws/src:/opt/ros/melodic/share
+```
 
+### Turtlebot Configuration:
+
+In order to install dependent ROS Packages needed before doing turtlebot on ROS, copy and paste those links on to the terminal:
+
+```
+sudo apt-get install ros-melodic-joy ros-melodic-teleop-twist-joy \
+  ros-melodic-teleop-twist-keyboard ros-melodic-laser-proc \
+  ros-melodic-rgbd-launch ros-melodic-depthimage-to-laserscan \
+  ros-melodic-rosserial-arduino ros-melodic-rosserial-python \
+  ros-melodic-rosserial-server ros-melodic-rosserial-client \
+  ros-melodic-rosserial-msgs ros-melodic-amcl ros-melodic-map-server \
+  ros-melodic-move-base ros-melodic-urdf ros-melodic-xacro \
+  ros-melodic-compressed-image-transport ros-melodic-rqt* \
+  ros-melodic-gmapping ros-melodic-navigation ros-melodic-interactive-markers
+```
+Now You Install TurtleBot3 via Debian Packages here:
+```
+sudo apt-get install ros-melodic-dynamixel-sdk
+sudo apt-get install ros-melodic-turtlebot3-msgs
+sudo apt-get install ros-melodic-turtlebot3
+```
