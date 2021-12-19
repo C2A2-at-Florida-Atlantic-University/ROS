@@ -128,11 +128,13 @@ sudo apt-get install ros-melodic-turtlebot3-msgs
 sudo apt-get install ros-melodic-turtlebot3
 ```
 Set the default TURTLEBOT3_MODEL name to your model. Enter the below command to a terminal.
+
+In case of TurtleBot3 Burger:
 ```
-In case of TurtleBot3 Burger
 echo "export TURTLEBOT3_MODEL=burger" >> ~/.bashrc
 ```
-In case of TurtleBot3 Waffle Pi
+In case of TurtleBot3 Waffle Pi:
+```
 $ echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
 ```
 ### Basic Turtlebot Navigation
@@ -140,7 +142,7 @@ $ echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
 Install the Navigation Package for Gazebo:
 
 ```
-cd ~/naviagation/src/
+cd ~/navigation/src/
 git clone -b melodic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 cd ~/navigation_ws && catkin_make
 ```
