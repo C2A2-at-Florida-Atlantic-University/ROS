@@ -127,3 +127,41 @@ sudo apt-get install ros-melodic-dynamixel-sdk
 sudo apt-get install ros-melodic-turtlebot3-msgs
 sudo apt-get install ros-melodic-turtlebot3
 ```
+Set the default TURTLEBOT3_MODEL name to your model. Enter the below command to a terminal.
+```
+In case of TurtleBot3 Burger
+echo "export TURTLEBOT3_MODEL=burger" >> ~/.bashrc
+```
+In case of TurtleBot3 Waffle Pi
+$ echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
+```
+### Basic Turtlebot Navigation
+Install the Navigation Package for Gazebo:
+```
+cd ~/naviagation/src/
+git clone -b melodic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+cd ~/navigation_ws && catkin_make
+``
+Launch Empty World on Gazebo:
+```
+export TURTLEBOT3_MODEL=burger
+roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
+```
+Launch TurtleBot3 World on Gazebo:
+```
+export TURTLEBOT3_MODEL=waffle
+roslaunch turtlebot3_gazebo turtlebot3_world.launch
+```
+Launch TurtleBot3 House on Gazebo:
+```
+export TURTLEBOT3_MODEL=waffle_pi
+roslaunch turtlebot3_gazebo turtlebot3_house.launch
+```
+How to Teleoperate the Turtlebot on Gazebo:
+
+####In order to teleoperate the TurtleBot3 with the keyboard, launch the teleoperation node with below command in a new terminal window.
+
+```
+roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+```
+
