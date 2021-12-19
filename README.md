@@ -142,7 +142,7 @@ Install the Navigation Package for Gazebo:
 cd ~/naviagation/src/
 git clone -b melodic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 cd ~/navigation_ws && catkin_make
-``
+```
 
 Launch Empty World on Gazebo:
 ```
