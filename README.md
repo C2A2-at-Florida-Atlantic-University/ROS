@@ -138,6 +138,7 @@ $ echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
 ### Basic Turtlebot Navigation
 
 Install the Navigation Package for Gazebo:
+
 ```
 cd ~/naviagation/src/
 git clone -b melodic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
@@ -145,16 +146,19 @@ cd ~/navigation_ws && catkin_make
 ```
 
 Launch Empty World on Gazebo:
+
 ```
 export TURTLEBOT3_MODEL=burger
 roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
 ```
 Launch TurtleBot3 World on Gazebo:
+
 ```
 export TURTLEBOT3_MODEL=waffle
 roslaunch turtlebot3_gazebo turtlebot3_world.launch
 ```
 Launch TurtleBot3 House on Gazebo:
+
 ```
 export TURTLEBOT3_MODEL=waffle_pi
 roslaunch turtlebot3_gazebo turtlebot3_house.launch
