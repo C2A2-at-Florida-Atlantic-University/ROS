@@ -137,7 +137,7 @@ In case of TurtleBot3 Waffle Pi:
 ```
 $ echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
 ```
-### Basic Turtlebot Navigation
+### Basic Turtlebot Navigation:
 
 Install the Navigation Package for Gazebo:
 
