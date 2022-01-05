@@ -1,0 +1,75 @@
+<launch>
+
+    <!-- Global agrs and params -->
+    <param name="/use_sim_time" value="true"/>
+
+    <!-- Gazebo World -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name"      value="$(find turtlebot3_gazebo)/worlds/turtlebot3_house.world"/>
+        <arg name="paused"          value="false"/>
+        <arg name="use_sim_time"    value="true"/>
+        <arg name="gui"             value="true"/>
+        <arg name="headless"        value="false"/>
+        <arg name="debug"           value="false"/>
+    </include>
+
+    <!-- AR Tag Spawner -->
+    <node   pkg="gazebo_ros"
+            type="spawn_model"
+            name="spawn_ar_tag"
+            respawn="false"
+            output="screen"
+            args="-urdf
+                -x -2.50
+                -y 5
+                -z 0.15
+                -R 1.5707963268
+                -P 3.1415926536
+                -Y 0
+                -model ar_tag
+                -file $(find master_pkg)/models/ar_tag.urdf"/>
+
+    <!-- Door Spawner -->
+    <node   pkg="gazebo_ros"
+            type="spawn_model"
+            name="spawn_door"
+            respawn="false"
+            output="screen"
+            args="-urdf
+                -x 1.109816
+                -y -0.174850
+                -z 0.5
+                -R 0
+                -P 0
+                -Y 0.004754
+                -model door
+                -file $(find master_pkg)/models/door.urdf"/>
+
+    <!-- Robot Spawner -->
+    <include file="$(find master_pkg)/launch/spawner.launch"/>
+
+    <!-- Map Merge -->
+    <node   pkg="multirobot_map_merge"
+            type="map_merge"
+            name="map_merge"
+            respawn="false"
+            output="screen">
+        <param name="robot_map_topic"       value="map"/>
+        <param name="known_init_poses"      value="false"/>
+        <param name="merged_map_topic"      value="map"/>
+        <param name="world_frame"           value="map"/>
+        <param name="merging_rate"          value="0.5"/>
+        <param name="discovery_rate"        value="0.05"/>
+        <param name="estimation_rate"       value="0.1"/>
+        <param name="estimation_confidence" value="1.0"/>
+    </node>
+    <!-- Map Position -->
+    <node   pkg="tf"
+            type="static_transform_publisher"
+            name="robot1_tf_broadcaster"
+            args="0 0 0 0 0 0 /map /robot1/map 100"/>
+    <node   pkg="tf"
+            type="static_transform_publisher"
+            name="robot2_tf_broadcaster"
+            args="0 0 0 0 0 0 /map /robot2/map 100"/>
+</launch>

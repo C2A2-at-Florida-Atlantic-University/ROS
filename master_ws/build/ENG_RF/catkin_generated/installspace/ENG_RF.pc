@@ -1,0 +1,8 @@
+prefix=/home/ca-ai/master_ws/install
+
+Name: ENG_RF
+Description: Description of ENG_RF
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

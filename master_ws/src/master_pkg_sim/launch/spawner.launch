@@ -1,0 +1,35 @@
+<launch>
+    
+    <!-- Args and Params -->
+
+    <!-- Robot instances -->
+    <!-- Robot 1 -->
+    <include file="$(find master_pkg)/launch/robot_ins.launch">
+        <!-- Robot properties -->
+        <arg name="robot_nb"    value="robot1"/>
+        <arg name="robot_md"    value="waffle_pi"/>
+        <arg name="init_x"      value="2"/>
+        <arg name="init_y"      value="0.5"/>
+        <arg name="init_yaw"    value="1.5707963268"/>
+        <!--
+        <arg name="init_x"      value="-2.8"/>
+        <arg name="init_y"      value="3.5"/>
+        <arg name="init_yaw"    value="3.1415926536"/>
+        -->
+
+    </include>
+    <!-- Robot 2 -->
+    <include file="$(find master_pkg)/launch/robot_ins.launch">
+        <!-- Robot properties -->
+        <arg name="robot_nb"    value="robot2"/>
+        <arg name="robot_md"    value="burger_cam"/>
+        <arg name="init_x"      value="-6"/>
+        <arg name="init_y"      value="2"/>
+        <arg name="init_yaw"    value="1.5707963268"/>
+        <!--
+        <arg name="init_x"      value="-2.2"/>
+        <arg name="init_y"      value="3.5"/>
+        -->
+
+    </include>
+</launch>

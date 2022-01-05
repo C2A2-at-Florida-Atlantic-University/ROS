@@ -1,0 +1,8 @@
+prefix=/home/ca-ai/master_ws/install
+
+Name: p3at_gazebo
+Description: Description of p3at_gazebo
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

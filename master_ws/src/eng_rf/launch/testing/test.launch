@@ -1,0 +1,18 @@
+<launch>
+    <!-- Global agrs and params 
+    <param name="/use_sim_time" value="true"/>-->
+
+    <!-- RL by the girls -->
+    <!-- <node   pkg="rl"
+            type="rl"
+            name="rl"/> -->
+    <!-- RF Navigator -->
+    <node	pkg="rf_navigator"
+			name="rf_burger"
+			type="navigator.py"
+			output="screen"/>
+    <node	pkg="rf_navigator"
+			name="rf_waffle"
+			type="navigator_2.py"
+			output="screen"/>
+</launch>

@@ -1,0 +1,35 @@
+<launch>
+    <!--
+    -->
+     <!-- Map frame -->
+    <node   pkg="map_server"
+            type="map_server"
+            name="map_server"
+            args="$(find master_pkg)/map/house_map.yaml" >
+        <param name="frame_id" value="/map_frame" />
+    </node>
+
+    <!-- Map Position -->
+    <node   pkg="tf"
+            type="static_transform_publisher"
+            name="robot1_tf_broadcaster"
+            args="0 0 0 0 0 0 /map_frame /robot1/odom 100"/>
+    <node   pkg="tf"
+            type="static_transform_publisher"
+            name="robot2_tf_broadcaster"
+            args="0 0 0 0 0 0 /map_frame /robot2/odom 100"/>
+
+    <!-- Launch Rviz -->
+    <node   pkg="rviz"
+            type="rviz"
+            name="rviz"
+            args="-d $(find master_pkg)/rviz/main_rviz.rviz" />
+    <node   pkg="rviz"
+            type="rviz"
+            name="rviz1"
+            args="-d $(find master_pkg)/rviz/robot1.rviz" />
+    <node   pkg="rviz"
+            type="rviz"
+            name="rviz2"
+            args="-d $(find master_pkg)/rviz/robot2.rviz" />
+</launch>

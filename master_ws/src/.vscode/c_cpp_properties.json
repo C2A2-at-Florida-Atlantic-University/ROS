@@ -1,0 +1,20 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/opt/ros/melodic/include/**",
+        "/home/ca-ai/master_ws/src/master_pkg/include/**",
+        "/home/ca-ai/master_ws/src/master_pkg_sim/include/**",
+        "/home/ca-ai/master_ws/src/turtlebot3_simulations/turtlebot3_fake/include/**",
+        "/home/ca-ai/master_ws/src/turtlebot3_simulations/turtlebot3_gazebo/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}

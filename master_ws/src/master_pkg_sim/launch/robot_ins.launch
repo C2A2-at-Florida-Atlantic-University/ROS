@@ -1,0 +1,80 @@
+<launch>
+
+    <!-- Arguments -->
+    <!-- Robot name and model -->
+    <arg    name="robot_nb" default="robot1"/>
+    <arg    name="robot_md" default="waffle_pi"/>
+    <!-- Positions -->
+    <arg    name="init_x"   default="0"/>
+    <arg    name="init_y"   default="0"/>
+    <arg    name="init_z"   default="0"/>
+    <arg    name="init_yaw" default="0"/>
+    <arg    name="robot_pos"
+            value=" -x $(arg init_x)
+                    -y $(arg init_y)
+                    -z $(arg init_z)
+                    -Y $(arg init_yaw)"/>
+    <!-- Namespaces -->
+    <!-- Map Merge Params -->
+    <group ns="$(arg robot_nb)/map_merge">
+        <param name="init_pose_x"   value="$(arg init_x)"/>
+        <param name="init_pose_y"   value="$(arg init_y)"/>
+        <param name="init_pose_z"   value="$(arg init_z)"/>
+        <param name="init_pose_yaw" value="$(arg init_yaw)"  />
+    </group>
+    <!-- Robot Params -->
+    <group ns="$(arg robot_nb)">
+        <!-- Robot Model -->
+        <param  name="robot_description"
+                command="$(find xacro)/xacro
+                        $(find turtlebot3_description)/urdf/turtlebot3_$(arg robot_md).urdf.xacro" />
+        <!-- Publishers -->
+        <node   pkg="robot_state_publisher"
+                type="robot_state_publisher"
+                name="robot_state_publisher"
+                output="screen">
+            <param  type="double"
+                    name="publish_frequency"
+                    value="50.0" />
+            <param  name="tf_prefix"
+                    value="$(arg robot_nb)" />
+        </node>
+        <!-- Gazebo Spawn -->
+        <node   pkg="gazebo_ros"
+                type="spawn_model"
+                name="spawn_urdf"
+                args="  -urdf
+                        -model $(arg robot_nb)
+                        $(arg robot_pos)
+                        -param robot_description" />
+        <!-- AR Tag Alvar -->
+        <node   pkg="ar_track_alvar"
+                type="individualMarkersNoKinect"
+                name="ar_track_alvar"
+                respawn="false"
+                output="screen"
+                args="  10.0
+                        0.08
+                        0.2
+                        /$(arg robot_nb)/camera/rgb/image_raw
+                        /$(arg robot_nb)/camera/rgb/camera_info
+                        /$(arg robot_nb)/camera_rgb_optical_frame" />
+        <remap  from="visualization_marker" to="$(arg robot_nb)/visualization_marker"/>
+        <remap  from="ar_pose_marker"       to="$(arg robot_nb)/ar_pose_marker"/>
+        <!-- Autonomous Collision Acoidance -->
+        <param  name="cmd_vel_topic_name" value="/$(arg robot_nb)/cmd_vel"/>
+        <node   pkg="turtlebot3_gazebo"
+                type="turtlebot3_drive"
+                name="$(arg robot_nb)_drive"
+                required="true"
+                output="screen"/>
+        <!-- Multi Slam -->
+        <node pkg="gmapping" type="slam_gmapping" name="turtlebot3_slam_gmapping" output="screen">
+            <param name="base_frame" value="$(arg robot_nb)/base_footprint"/>
+            <param name="odom_frame" value="$(arg robot_nb)/odom"/>
+            <param name="map_frame"  value="$(arg robot_nb)/map"/>
+            <rosparam command="load" file="$(find master_pkg)/config/multi_gmapping.yaml" />
+        </node>
+    </group>
+
+</launch>

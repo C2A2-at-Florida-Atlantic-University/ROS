@@ -1,0 +1,8 @@
+prefix=/home/ca-ai/master_ws/install
+
+Name: master_pkg
+Description: Description of master_pkg
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

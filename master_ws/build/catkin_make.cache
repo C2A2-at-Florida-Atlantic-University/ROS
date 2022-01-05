@@ -1,0 +1,2 @@
+eng_rf:markers_rf:master_pkg:master_pkg_sim:p3at/p3at_description:p3at/p3at_gazebo:p3at/p3at_plugin:rf_navigator:rl:turtlebot3_simulations/turtlebot3_fake:turtlebot3_simulations/turtlebot3_gazebo:turtlebot3_simulations/turtlebot3_simulations
+-DCATKIN_DEVEL_PREFIX=/home/ca-ai/master_ws/devel -DCMAKE_INSTALL_PREFIX=/home/ca-ai/master_ws/install -G Unix Makefiles
