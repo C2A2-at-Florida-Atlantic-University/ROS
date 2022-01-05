@@ -1,0 +1,8 @@
+prefix=/home/ca-ai/master_ws/devel
+
+Name: master_msgs
+Description: Description of master_msgs
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

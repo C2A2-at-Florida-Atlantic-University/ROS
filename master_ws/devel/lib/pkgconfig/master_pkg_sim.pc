@@ -1,0 +1,8 @@
+prefix=/home/ca-ai/master_ws/devel
+
+Name: master_pkg_sim
+Description: Description of master_pkg_sim
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

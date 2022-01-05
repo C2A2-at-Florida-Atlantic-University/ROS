@@ -1,0 +1,2 @@
+
+-DCATKIN_DEVEL_PREFIX=/home/ca-ai/master_ws/map_data/devel -DCMAKE_INSTALL_PREFIX=/home/ca-ai/master_ws/map_data/install -G Unix Makefiles
