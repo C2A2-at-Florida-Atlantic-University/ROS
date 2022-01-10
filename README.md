@@ -64,10 +64,7 @@ source /opt/ros/melodic/setup.bash
 To install the tool and other dependencies in order to build ROS packages, run:
 
 ```
-sudo apt install python-rosdep
-python-rosinstall
-python-rosinstall-generator
-python-wstool build-essential
+sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
 ```
 
 Before you can use many ROS tools, you will need to initialize rosdep. rosdep enables you to easily install system dependencies for source you want to compile and is required to run some core components in ROS. If you have not yet installed rosdep, do so as follows.
