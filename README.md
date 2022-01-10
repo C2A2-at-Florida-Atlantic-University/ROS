@@ -95,7 +95,6 @@ Now to add your Workspace as your default workspace:
 ```
 source devel/setup.bash
 echo $ROS_PACKAGE_PATH
-/home/user/navigation_ws/src:/opt/ros/melodic/share
 ```
 
 ### Turtlebot Configuration:
