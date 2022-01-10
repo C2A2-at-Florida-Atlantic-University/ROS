@@ -126,7 +126,7 @@ echo "export TURTLEBOT3_MODEL=burger" >> ~/.bashrc
 ```
 In case of TurtleBot3 Waffle Pi:
 ```
-$ echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
+echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
 ```
 ### Basic Turtlebot Navigation:
 
