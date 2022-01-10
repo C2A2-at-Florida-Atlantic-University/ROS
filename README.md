@@ -90,10 +90,7 @@ mkdir -p ~/navigation_ws/src
 cd ~/navigation_ws/
 catkin_make
 ```
-To add Python 3 Compatibility:
-```
-catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3
-```
+
 Now to add your Workspace as your default workspace:
 ```
 source devel/setup.bash
