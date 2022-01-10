@@ -140,7 +140,7 @@ cd ~/navigation_ws && catkin_make
 Before you start on any terminal for launching the robot on Gazebo:
 
 ```
-cd navigation_ws/source devel/setup.bash
+cd ~/navigation_ws/source devel/setup.bash
 ```
 
 Launch Empty World on Gazebo:
