@@ -1,0 +1,72 @@
+<launch>
+
+    <!-- Arguments -->
+    <!-- Robot name/model -->
+    <arg    name="robot_md" default="waffle_pi"/>
+    <arg    name="robot_ns" default="robot_1"/>
+    <!-- Positions -->
+    <arg    name="init_x"   default="0"/>
+    <arg    name="init_y"   default="0"/>
+    <arg    name="init_z"   default="0"/>
+    <arg    name="init_yaw" default="0"/>
+    <arg    name="robot_pos"
+            value=" -x $(arg init_x)
+                    -y $(arg init_y)
+                    -z $(arg init_z)
+                    -Y $(arg init_yaw)"/>
+    <!-- Namespaces -->
+    <!-- Map Merge Params -->
+    <group ns="$(arg robot_ns)/map_merge">
+        <param name="init_pose_x"   value="$(arg init_x)"/>
+        <param name="init_pose_y"   value="$(arg init_y)"/>
+        <param name="init_pose_z"   value="$(arg init_z)"/>
+        <param name="init_pose_yaw" value="$(arg init_yaw)"  />
+	</group>
+    <!-- Robot Params -->
+    <group ns="$(arg robot_ns)">
+        <!-- Robot Model -->
+        <param  name="robot_description"
+                command="$(find xacro)/xacro
+                         $(find turtlebot3_description)/urdf/turtlebot3_$(arg robot_md).urdf.xacro" />
+        <!-- Gazebo Spawn -->
+        <node   pkg="gazebo_ros"
+                type="spawn_model"
+                name="spawn_urdf"
+                args="  -urdf
+                        -model $(arg robot_ns)
+                        $(arg robot_pos)
+                        -param robot_description" />
+        <!-- Publishers -->
+        <node   pkg="robot_state_publisher"
+                type="robot_state_publisher"
+                name="robot_state_publisher"
+                output="screen">
+            <param  type="double"
+                    name="publish_frequency"
+                    value="50.0" />
+            <param  name="tf_prefix"
+                    value="$(arg robot_ns)" />
+        </node>
+         <!-- Autonomous Collision Avoidance
+        <param  name="cmd_vel_topic_name" value="/$(arg robot_ns)/cmd_vel"/>
+        <node   pkg="turtlebot3_gazebo"
+                type="turtlebot3_drive"
+                name="$(arg robot_ns)_drive"
+                required="true"
+                output="screen"/> -->
+        <!-- Multi Slam -->
+        <node pkg="gmapping" type="slam_gmapping" name="turtlebot3_slam_gmapping" output="screen">
+            <param name="base_frame" value="$(arg robot_ns)/base_footprint"/>
+            <param name="odom_frame" value="$(arg robot_ns)/odom"/>
+            <param name="map_frame"  value="$(arg robot_ns)/map"/>
+            <rosparam command="load" file="$(find eng_rf)/config/multi_gmapping.yaml" />
+        </node>
+    </group>
+
+    <!-- Launch Rviz 
+    <node   pkg="rviz"
+            type="rviz"
+            name="rviz_$(arg robot_md)"
+            args="-d $(find eng_rf)/rviz/$(arg robot_md).rviz" />
+-->
+</launch>
