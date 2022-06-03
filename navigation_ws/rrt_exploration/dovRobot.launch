@@ -1,0 +1,317 @@
+<!-- Launch file for the rrt-detector and the assigner -->
+<launch>
+  <!-- <rosparam command="load" file="$(find ros_multitb3)/launch/init_position/multi_init_position1.yaml"/> -->
+  <!-- files and model parameter settings -->
+  <arg name="model" default="waffle_pi" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="move_forward_only" default="false"/>
+  <arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
+
+  <!-- define for the turtlebot environment -->
+  <arg name="first_tb3"  default="tb3_1"/>
+  <arg name="second_tb3" default="tb3_2"/>
+  <arg name="third_tb3"  default="tb3_3"/>
+  
+  <arg name="first_tb3_x_pos" default=" 0.5"/>
+  <arg name="first_tb3_y_pos" default=" 2.2"/>
+  <arg name="first_tb3_z_pos" default=" 0.0"/>
+  <arg name="first_tb3_yaw"   default=" 0.0"/>
+
+  <arg name="second_tb3_x_pos" default=" 0.5"/>
+  <arg name="second_tb3_y_pos" default=" 3.8"/>
+  <arg name="second_tb3_z_pos" default=" 0.0"/>
+  <arg name="second_tb3_yaw"   default=" 0.0"/>
+
+  <arg name="third_tb3_x_pos" default=" 0.5"/>
+  <arg name="third_tb3_y_pos" default=" 3.0"/>
+  <arg name="third_tb3_z_pos" default=" 0.0"/>
+  <arg name="third_tb3_yaw"   default=" 0.0"/>
+
+    <!-- <arg name="first_tb3"  default="tb3_1"/>
+  <arg name="second_tb3" default="tb3_2"/>
+  <arg name="third_tb3"  default="tb3_3"/>
+  
+  <arg name="first_tb3_x_pos" default=" -6.5"/>
+  <arg name="first_tb3_y_pos" default=" 2.2"/>
+  <arg name="first_tb3_z_pos" default=" 0.0"/>
+  <arg name="first_tb3_yaw"   default=" 0.0"/>
+
+  <arg name="second_tb3_x_pos" default=" 0.5"/>
+  <arg name="second_tb3_y_pos" default=" 3.8"/>
+  <arg name="second_tb3_z_pos" default=" 0.0"/>
+  <arg name="second_tb3_yaw"   default=" 0.0"/>
+
+  <arg name="third_tb3_x_pos" default=" 6.5"/>
+  <arg name="third_tb3_y_pos" default=" 3.0"/>
+  <arg name="third_tb3_z_pos" default=" 0.0"/>
+  <arg name="third_tb3_yaw"   default=" 0.0"/> -->
+
+
+<!-- launch gazebos from the data -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    
+ <arg name="world_name" value="$(find ros_multitb3)/worlds/turtlebot3_house_mod2.world"/> 
+    <!-- <arg name="world_name" value="$(find ros_multitb3)/worlds/turtlebot3_house_mod.world"/> -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>  
+ 
+
+
+    <!-- Door Spawner 
+    <node   pkg="gazebo_ros"
+            type="spawn_model"
+            name="spawn_door"
+            respawn="false"
+            output="screen"
+            args="-urdf
+                -x 1.109816
+                -y -0.174850
+                -z 0.5
+                -R 0
+                -P 0
+                -Y 0.004754
+                -model door
+                -file $(find ros_multitb3)/models/door.urdf"/> -->
+<!-- spawn the robots and related information -->
+  <group ns = "/$(arg first_tb3)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+      <param name="publish_frequency" type="double" value="100.0" />
+      <param name="use_tf_static" type="bool" value="false" />
+      <param name="tf_prefix" value="$(arg first_tb3)" />
+    </node>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model $(arg first_tb3) -x $(arg first_tb3_x_pos) -y $(arg first_tb3_y_pos) -z $(arg first_tb3_z_pos) -Y $(arg first_tb3_yaw) -param robot_description" />
+    <!-- include gmapping for the first turtle bot -->
+    <include file="$(find turtlebot3_slam)/launch/turtlebot3_$(arg slam_methods).launch">
+      <arg name="set_base_frame" value="$(arg first_tb3)/base_footprint"/>
+      <arg name="set_odom_frame" value="$(arg first_tb3)/odom"/>
+      <arg name="set_map_frame" value="$(arg first_tb3)/map"/>
+      <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+    </include>
+    <!-- include move base for the first turtle bot -->
+    <include file="$(find ros_multitb3)/launch/includes/move_base.launch">
+      <arg name="model" value="$(arg model)" />
+      <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+      <arg name="cmd_vel_topic" value="/$(arg first_tb3)/cmd_vel"/>
+      <arg name="namespace" value="$(arg first_tb3)"/>
+    </include>
+    <!-- include amcl for the first turtle bot -->
+    <include file="$(find ros_multitb3)/launch/includes/amcl.launch">
+      <arg name="scan_topic" value="$(arg first_tb3)/scan"/>
+      <arg name="global_frame_id" value="$(arg first_tb3)/map"/>
+      <arg name="base_frame_id" value="$(arg first_tb3)/base_footprint"/>
+      <arg name="odom_frame_id" value="$(arg first_tb3)/odom"/>
+    </include>
+      <!-- AR Tag Alvar -->
+        <node   pkg="ar_track_alvar"
+                type="individualMarkersNoKinect"
+                name="ar_track_alvar"
+                respawn="false"
+                output="screen"
+                args="  10.0
+                        0.08
+                        0.2
+                        /$(arg first_tb3)/camera/rgb/image_raw
+                        /$(arg first_tb3)/camera/rgb/camera_info
+                        /$(arg first_tb3)/camera_rgb_optical_frame" />
+        <remap  from="visualization_marker" to="$(arg first_tb3)/visualization_marker"/>
+        <remap  from="ar_pose_marker"       to="$(arg first_tb3)/ar_pose_marker"/>
+        
+  </group>
+
+  <group ns = "/$(arg second_tb3)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+      <param name="publish_frequency" type="double" value="100.0" />
+      <param name="use_tf_static" type="bool" value="false" />
+      <param name="tf_prefix" value="$(arg second_tb3)" />
+    </node>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model $(arg second_tb3) -x $(arg second_tb3_x_pos) -y $(arg second_tb3_y_pos) -z $(arg second_tb3_z_pos) -Y $(arg second_tb3_yaw) -param robot_description" />
+    <!-- include gmapping for the second turtle bot -->
+    <include file="$(find turtlebot3_slam)/launch/turtlebot3_$(arg slam_methods).launch">
+      <arg name="set_base_frame" value="$(arg second_tb3)/base_footprint"/>
+      <arg name="set_odom_frame" value="$(arg second_tb3)/odom"/>
+      <arg name="set_map_frame" value="$(arg second_tb3)/map"/>
+      <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+    </include>
+    <!-- include move base for the second turtle bot -->
+    <include file="$(find ros_multitb3)/launch/includes/move_base.launch">
+      <arg name="model" value="$(arg model)" />
+      <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+      <arg name="cmd_vel_topic" value="/$(arg second_tb3)/cmd_vel"/>
+      <arg name="namespace" value="$(arg second_tb3)"/>
+    </include>
+    <!-- include amcl for the second turtle bot -->
+    <include file="$(find ros_multitb3)/launch/includes/amcl.launch">
+      <arg name="scan_topic" value="$(arg second_tb3)/scan"/>
+      <arg name="global_frame_id" value="$(arg second_tb3)/map"/>
+      <arg name="base_frame_id" value="$(arg second_tb3)/base_footprint"/>
+      <arg name="odom_frame_id" value="$(arg second_tb3)/odom"/>
+    </include>
+    <!-- AR Tag Alvar -->
+        <node   pkg="ar_track_alvar"
+                type="individualMarkersNoKinect"
+                name="ar_track_alvar"
+                respawn="false"
+                output="screen"
+                args="  10.0
+                        0.08
+                        0.2
+                        /$(arg second_tb3)/camera/rgb/image_raw
+                        /$(arg second_tb3)/camera/rgb/camera_info
+                        /$(arg second_tb3)/camera_rgb_optical_frame" />
+        <remap  from="visualization_marker" to="$(arg second_tb3)/visualization_marker"/>
+        <remap  from="ar_pose_marker"       to="$(arg second_tb3)/ar_pose_marker"/>
+  </group>
+
+  <group ns = "/$(arg third_tb3)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+      <param name="publish_frequency" type="double" value="100.0" />
+      <param name="use_tf_static" type="bool" value="false" />
+      <param name="tf_prefix" value="$(arg third_tb3)" />
+    </node>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model $(arg third_tb3) -x $(arg third_tb3_x_pos) -y $(arg third_tb3_y_pos) -z $(arg third_tb3_z_pos) -Y $(arg third_tb3_yaw) -param robot_description" />
+    <!-- include gmapping for the third turtle bot -->
+    <include file="$(find turtlebot3_slam)/launch/turtlebot3_$(arg slam_methods).launch">
+      <arg name="set_base_frame" value="$(arg third_tb3)/base_footprint"/>
+      <arg name="set_odom_frame" value="$(arg third_tb3)/odom"/>
+      <arg name="set_map_frame" value="$(arg third_tb3)/map"/>
+      <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+    </include>
+    <!-- include move base for the third turtle bot -->
+    <include file="$(find ros_multitb3)/launch/includes/move_base.launch">
+      <arg name="model" value="$(arg model)" />
+      <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+      <arg name="cmd_vel_topic" value="/$(arg third_tb3)/cmd_vel"/>
+      <arg name="namespace" value="$(arg third_tb3)"/>
+    </include>
+    <!-- include amcl for the third turtle bot -->
+    <include file="$(find ros_multitb3)/launch/includes/amcl.launch">
+      <arg name="scan_topic" value="$(arg third_tb3)/scan"/>
+      <arg name="global_frame_id" value="$(arg third_tb3)/map"/>
+      <arg name="base_frame_id" value="$(arg third_tb3)/base_footprint"/>
+      <arg name="odom_frame_id" value="$(arg third_tb3)/odom"/>
+    </include>
+    <!-- AR Tag Alvar -->
+        <node   pkg="ar_track_alvar"
+                type="individualMarkersNoKinect"
+                name="ar_track_alvar"
+                respawn="false"
+                output="screen"
+                args="  10.0
+                        0.08
+                        0.2
+                        /$(arg third_tb3)/camera/rgb/image_raw
+                        /$(arg third_tb3)/camera/rgb/camera_info
+                        /$(arg third_tb3)/camera_rgb_optical_frame" />
+        <remap  from="visualization_marker" to="$(arg third_tb3)/visualization_marker"/>
+        <remap  from="ar_pose_marker"       to="$(arg third_tb3)/ar_pose_marker"/>
+  </group>
+
+  <!-- perform map merging process  -->
+  <include file="$(find ros_multitb3)/launch/includes/multi_tb3_mapmerge.launch">
+    <arg name="model" value="$(arg model)" />
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+    <arg name="first_tb3" value="$(arg first_tb3)"/>
+    <arg name="second_tb3" value="$(arg second_tb3)"/>
+    <arg name="third_tb3" value="$(arg third_tb3)"/>
+    <arg name="first_tb3_x_pos" default="$(arg first_tb3_x_pos)"/>
+    <arg name="first_tb3_y_pos" default="$(arg first_tb3_y_pos)"/>
+    <arg name="first_tb3_z_pos" default="$(arg first_tb3_z_pos)"/>
+    <arg name="first_tb3_yaw"   default="$(arg first_tb3_yaw)"/>
+    <arg name="second_tb3_x_pos" default="$(arg second_tb3_x_pos)"/>
+    <arg name="second_tb3_y_pos" default="$(arg second_tb3_y_pos)"/>
+    <arg name="second_tb3_z_pos" default="$(arg second_tb3_z_pos)"/>
+    <arg name="second_tb3_yaw"   default="$(arg second_tb3_yaw)"/>
+    <arg name="third_tb3_x_pos" default="$(arg third_tb3_x_pos)"/>
+    <arg name="third_tb3_y_pos" default="$(arg third_tb3_y_pos)"/>
+    <arg name="third_tb3_z_pos" default="$(arg third_tb3_z_pos)"/>
+    <arg name="third_tb3_yaw"   default="$(arg third_tb3_yaw)"/>
+  </include>
+
+    <!-- open rviz for visualization purpose -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find ros_multitb3)/rviz/multi_tb3_gmapping.rviz"/>
+
+ <!-- AR Tag Spawner -->
+    <node   pkg="gazebo_ros"
+            type="spawn_model"
+            name="spawn_ar_tag"
+            respawn="false"
+            output="screen"
+            args="-urdf
+                -x -2.50
+                -y 5
+                -z 0.15
+                -R 1.5707963268
+                -P 3.1415926536
+                -Y 0
+                -model ar_tag
+                -file $(find ros_multitb3)/models/ar_tag.urdf"/> 
+
+<!-- Launch file for the rrt-detector and the assigner exploration -->
+
+
+
+    <arg name="eta" value="1.0"/>
+    <arg name="Geta" value="1.0"/>
+  
+
+  
+    <node pkg="rrt_exploration" type="global_rrt_detector" name="global_rrt_detector" output="screen">
+      <param name="eta" value="$(arg Geta)"/>
+      <param name="map_topic" value="/map"/>
+    </node>
+  
+    <node pkg="rrt_exploration" type="local_rrt_detector" name="$(arg first_tb3)_rrt_detector" output="screen">
+      <param name="eta" value="$(arg eta)"/>
+      <param name="map_topic" value="/$(arg first_tb3)/map"/>
+      <param name="robot_frame" value="/$(arg first_tb3)/base_link"/>
+    </node>
+  
+    <node pkg="rrt_exploration" type="local_rrt_detector" name="$(arg second_tb3)_rrt_detector" output="screen">
+      <param name="eta" value="$(arg eta)"/>
+      <param name="map_topic" value="/$(arg second_tb3)/map"/>
+      <param name="robot_frame" value="/$(arg second_tb3)/base_link"/>
+    </node>
+  
+    <node pkg="rrt_exploration" type="local_rrt_detector" name="$(arg third_tb3)_rrt_detector" output="screen">
+      <param name="eta" value="$(arg eta)"/>
+      <param name="map_topic" value="/$(arg third_tb3)/map"/>
+      <param name="robot_frame" value="/$(arg third_tb3)/base_link"/>
+    </node>
+    
+    <!--node pkg="multi_kobuki_gazebo" type="frontier_opencv_testing.py" name="detector" output="screen"/-->
+  
+    <node pkg="rrt_exploration" type="filter.py" name="filter" output="screen">
+      <param name="map_topic" value="/map"/>
+      <param name="namespace_init_count" value="0"/>
+      <param name="info_radius" value= "1"/> 
+      <param name="costmap_clearing_threshold" value="70"/> 
+      <param name="goals_topic" value="/detected_points"/> 
+      <param name="n_robots" value="3"/>
+      <param name="namespace" value="/tb3_"/>
+      <param name="rate" value="100"/>
+    </node>
+    
+    
+    <node pkg="rrt_exploration" type="assigner.py" name="assigner" output="screen">
+      <param name="map_topic" value="/map"/>
+      <param name="global_frame" value="map"/>
+      <!-- <param name="global_frame" value="$(arg first_tb3)/map"/> -->
+      <param name="namespace_init_count" value="0"/>
+      <param name="info_radius" value="1"/> 
+      <param name="info_multiplier" value="3.0"/> 
+      <param name="hysteresis_radius" value="3.0"/> 
+      <param name="hysteresis_gain" value="2.0"/> 
+      <param name="frontiers_topic" value="/filtered_points"/> 
+      <param name="n_robots" value="3"/>
+      <param name="namespace" value="/tb3_"/>
+      <param name="delay_after_assignement" value="1.5"/>
+      <param name="rate" value="100"/>
+    </node>
+  </launch>
